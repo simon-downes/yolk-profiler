@@ -1,18 +1,16 @@
-Want to work for Gamer Network? [We are hiring!](http://www.gamesindustry.biz/jobs/gamer-network)
-
 # Yolk Profiler
 
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/gamernetwork/yolk-profiler/badges/quality-score.png?b=develop)](https://scrutinizer-ci.com/g/gamernetwork/yolk-profiler/?branch=develop)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/simon-downes/yolk-profiler/badges/quality-score.png?b=develop)](https://scrutinizer-ci.com/g/simon-downes/yolk-profiler/?branch=develop)
 
 A simple profiling library for benchmarking code execution speed, memory usage and database queries.
 
 ## Requirements
 
-This library requires only PHP 5.4 or later and the Yolk Contracts package (`gamernetwork/yolk-contracts`).
+This library requires only PHP 5.4 or later and the Yolk Contracts package (`simon-downes/yolk-contracts`).
 
 ## Installation
 
-It is installable and autoloadable via Composer as `gamer-network/yolk-profiler`.
+It is installable and autoloadable via Composer as `simon-downes/yolk-profiler`.
 
 Alternatively, download a release or clone this repository, and add the `\yolk\profiler` namespace to an autoloader.
 
