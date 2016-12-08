@@ -14,10 +14,13 @@ namespace yolk\profiler;
 use yolk\contracts\profiler\Profiler;
 use yolk\contracts\profiler\Timer;
 
+use yolk\contracts\support\Dumpable;
+use yolk\contracts\support\Arrayable;
+
 /**
  * Simple profiler class for recording code execution time, memory usage and database queries.
  */
-class GenericProfiler implements Profiler {
+class GenericProfiler implements Profiler, Dumpable {
 
 	/**
 	 * Array of timer instances.
@@ -42,6 +45,8 @@ class GenericProfiler implements Profiler {
 	 * @var array
 	 */
 	protected $meta;
+
+	protected $config;
 
 	public function __construct( $time = null, $memory = null ) {
 		$this->reset($time, $memory);
@@ -68,6 +73,7 @@ class GenericProfiler implements Profiler {
 
 		$this->queries = [];
 		$this->meta    = [];
+		$this->config  = [];
 
 	}
 
@@ -145,11 +151,16 @@ class GenericProfiler implements Profiler {
 		return $this;
 	}
 
-	public function meta( $key, $value ) {
+	public function meta( $key, $value = null ) {
 		if( $value === null )
 			unset($this->meta[$key]);
 		else
 			$this->meta[$key] = $value;
+		return $this;
+	}
+
+	public function config( Arrayable $config ) {
+		$this->config = $config->toArray();
 		return $this;
 	}
 
@@ -166,6 +177,7 @@ class GenericProfiler implements Profiler {
 			'marks'    => [],
 			'queries'  => $this->queries,
 			'meta'     => $this->meta,
+			'config'   => $this->config,
 			'includes' => get_included_files()
 		];
 
@@ -187,8 +199,26 @@ class GenericProfiler implements Profiler {
 	public function getHTML() {
 		ob_start();
 		$report = $this->getData();
-		include __DIR__. '/report.php';
+		include __DIR__. '/debug-bar/main.php';
 		return ob_get_clean();
+	}
+
+	public function dump( $dumper = '\\yolk\\debug\\TextDumper', $depth = 1 ) {
+		if( $depth > 1 ) {
+			return sprintf(
+				"%s {\n%selapsed: %s ms\n%smemory : %s MB\n%squeries: %d\n%smarks  : %d\n%s}",
+				get_class($this),
+				str_repeat("\t", $depth),
+				number_format($this->getElapsed() * 1000),
+				str_repeat("\t", $depth),
+				number_format(memory_get_peak_usage() / 1024 / 1024, 3),
+				str_repeat("\t", $depth),
+				count($this->queries),
+				str_repeat("\t", $depth),
+				count($this->marks),
+				str_repeat("\t", $depth - 1)
+			);
+		}
 	}
 
 }
